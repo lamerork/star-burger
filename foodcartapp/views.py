@@ -1,8 +1,9 @@
 from django.http import JsonResponse
 from django.templatetags.static import static
-import json
 
 from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework import status
 
 from .models import Product, Order, OrderItem
 
@@ -62,7 +63,18 @@ def product_list_api(request):
 def register_order(request):
 
     order_data = request.data
-    print(order_data)
+
+    if not order_data.get('products'):
+        return Response(
+            {'error': '[products] - список отсутствует или оказался пустым'},
+            status=status.HTTP_404_NOT_FOUND
+        )
+
+    if not isinstance(order_data['products'], list):
+        return Response(
+            {'error': '[products] - Получен другой формат данных'},
+            status=status.HTTP_406_NOT_ACCEPTABLE
+        )
 
     order = Order.objects.create(
         firstname=order_data['firstname'],
