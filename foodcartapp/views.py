@@ -3,10 +3,23 @@ from django.templatetags.static import static
 
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from rest_framework import status
-from phonenumbers import parse, is_valid_number
+from rest_framework.serializers import ModelSerializer
 
 from .models import Product, Order, OrderItem
+
+
+class OrderItemSerializer(ModelSerializer):
+    class Meta:
+        model = OrderItem
+        fields = ['product', 'quantity']
+
+
+class OrderSerializer(ModelSerializer):
+    products = OrderItemSerializer(many=True, allow_empty=False)
+
+    class Meta:
+        model = Order
+        fields = ['firstname', 'lastname', 'phone_number', 'address', 'products']
 
 
 def banners_list_api(request):
@@ -61,62 +74,20 @@ def product_list_api(request):
     })
 
 
-def validate_order(new_order):
-    order_keys = ['firstname', 'lastname', 'address']
-    for order_key in order_keys:
-        if not new_order.get(order_key):
-            content = {'error': f'похоже что {order_key} отсутствует или указано не верное значение (None, Null, 0, False)'}
-            return content, False
-        if not isinstance(new_order[order_key], str):
-            content = {'error': f'получен неподдерживаемый формат данных в параметре {order_key}'}
-            return content, False
-
-    if not new_order.get('phonenumber'):
-        content = {'error': 'phonenumber отсутствует'}
-        return content, False
-
-    client_phonenumber = parse(new_order['phonenumber'], 'RU')
-    if not is_valid_number(client_phonenumber):
-        content = {'error': 'phonenumber не подходит под формат региона'}
-        return content, False
-
-    if not new_order.get('products'):
-        content = {'error': 'похоже что список products отсутствует или оказался пустым'}
-        return content, False
-
-    ordered_products = new_order['products']
-    if not isinstance(ordered_products, list):
-        content = {'error': 'похоже вместо списка products получен другой формат данных'}
-        return content, False
-
-    all_ordered_products = [ordered_product['product'] for ordered_product in ordered_products]
-    all_products = Product.objects.all()
-    last_product_id = list(all_products)[-1].id
-
-    for product_id in all_ordered_products:
-        if not 0 < int(product_id) <= last_product_id:
-            content = {'error': f'Позиции с индексом {product_id} не существует'}
-            return content, False
-    return {}, True
-
-
 @api_view(['POST'])
 def register_order(request):
 
-    order_data = request.data
-
-    content, validation = validate_order(order_data)
-    if not validation:
-        return Response(content, status=status.HTTP_404_NOT_FOUND)
+    serializer = OrderSerializer(data=request.data)
+    serializer.is_valid(raise_exception=True)
 
     order = Order.objects.create(
-        firstname=order_data['firstname'],
-        lastname=order_data['lastname'],
-        phone_number=order_data['phonenumber'],
-        address=order_data['address']
+        firstname=serializer.validated_data['firstname'],
+        lastname=serializer.validated_data['lastname'],
+        phone_number=serializer.validated_data['phonenumber'],
+        address=serializer.validated_data['address']
     )
 
-    for item in order_data['products']:
+    for item in serializer.validated_data['products']:
 
         product = Product.objects.get(id=item['product'])
         OrderItem.objects.create(
