@@ -161,6 +161,12 @@ class Order(models.Model):
         )
 
     address = models.CharField(verbose_name='Адрес доставки', max_length=100)
+    comment = models.TextField(
+        verbose_name='Комментарий к заказу',
+        null=True,
+        blank=True,
+        default=''
+    )
 
     objects = OrderQuerySet.as_manager()
 
