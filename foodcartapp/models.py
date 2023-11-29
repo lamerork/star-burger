@@ -134,8 +134,26 @@ class OrderQuerySet(models.QuerySet):
 
 
 class Order(models.Model):
+
+    ORDER_STATUSES = [
+        ('Н', 'Необработан'),
+        ('Г', 'Готовится'),
+        ('С', 'Сборка'),
+        ('Д', 'Доставка'),
+        ('В', 'Выполнен')
+     ]
+
+    status = models.CharField(
+        choices=ORDER_STATUSES,
+        verbose_name='Cтатус заказа',
+        max_length=1,
+        default='Н',
+        db_index=True
+     )
+
     firstname = models.CharField(verbose_name='Имя', max_length=50)
     lastname = models.CharField(verbose_name='Фамилия', max_length=50)
+
     phonenumber = PhoneNumberField(
         db_index=True,
         verbose_name='Телефон',
