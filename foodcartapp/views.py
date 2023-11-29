@@ -1,5 +1,6 @@
 from django.http import JsonResponse
 from django.templatetags.static import static
+from django.shortcuts import get_object_or_404
 
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -88,10 +89,12 @@ def register_order(request):
     )
 
     for item in serializer.validated_data['products']:
+        product = get_object_or_404(Product, name=item['product'])
         OrderItem.objects.create(
             order=order,
             product=item['product'],
-            quantity=item['quantity']
+            quantity=item['quantity'],
+            price=product.price
         )
 
     return Response(OrderSerializer(order).data)

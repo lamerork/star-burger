@@ -134,4 +134,15 @@ class OrderAdmin(admin.ModelAdmin):
 
 @admin.register(OrderItem)
 class OrderItemAdmin(admin.ModelAdmin):
-    pass
+    list_display = [
+        'id',
+        'order',
+        'product',
+        'quantity',
+        'price',
+    ]
+
+    raw_id_fields = [
+        'order',
+        'product',
+    ]
