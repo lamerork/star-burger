@@ -121,6 +121,7 @@ class OrderAdmin(admin.ModelAdmin):
         'address',
     ]
     list_display = [
+        'id',
         'firstname',
         'lastname',
         'phonenumber',
