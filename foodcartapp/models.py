@@ -144,6 +144,11 @@ class Order(models.Model):
         ('В', 'Выполнен')
      ]
 
+    PAYMENT_METHODS = [
+        ('Э', 'Электронно'),
+        ('Н', 'Наличностью')
+    ]
+
     status = models.CharField(
         choices=ORDER_STATUSES,
         verbose_name='Cтатус заказа',
@@ -151,6 +156,14 @@ class Order(models.Model):
         default='Н',
         db_index=True
      )
+
+    payment_method = models.CharField(
+        verbose_name='Cпособ оплаты',
+        choices=PAYMENT_METHODS,
+        max_length=1,
+        default='Н',
+        db_index=True
+    )
 
     firstname = models.CharField(verbose_name='Имя', max_length=50)
     lastname = models.CharField(verbose_name='Фамилия', max_length=50)
