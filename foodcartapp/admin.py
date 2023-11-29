@@ -10,6 +10,7 @@ from .models import RestaurantMenuItem
 
 from .models import Order, OrderItem
 
+
 class RestaurantMenuItemInline(admin.TabularInline):
     model = RestaurantMenuItem
     extra = 0
