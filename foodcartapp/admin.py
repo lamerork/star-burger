@@ -122,6 +122,7 @@ class OrderAdmin(admin.ModelAdmin):
         'lastname',
         'phonenumber',
         'address',
+        'restaurant',
         'registered_at',
     ]
     list_filter = [
@@ -136,6 +137,9 @@ class OrderAdmin(admin.ModelAdmin):
         'phonenumber',
         'address',
         'registered_at',
+    ]
+    raw_id_fields = [
+        'restaurant',
     ]
     inlines = [
         OrderItemInline

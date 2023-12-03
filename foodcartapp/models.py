@@ -133,6 +133,20 @@ class OrderQuerySet(models.QuerySet):
             total_price=Sum(F('item__price')*F('item__quantity'))
         )
 
+    def filter_restaurants_for_order(self, order_id):
+        order = self.get(pk=order_id)
+
+        if order.restaurant:
+            return Restaurant.objects.filter(pk=order.restaurant.pk).distinct()
+        else:
+            products = order.item.values_list('product_id', flat=True)
+            restaurants = Restaurant.objects.filter(menu_items__product_id__in=products).distinct()
+
+            for product_id in products:
+                restaurants = restaurants.filter(menu_items__product_id=product_id)
+
+            return restaurants.distinct()
+
 
 class Order(models.Model):
 
@@ -181,6 +195,16 @@ class Order(models.Model):
         blank=True,
         default=''
     )
+
+    restaurant = models.ForeignKey(
+        Restaurant,
+        verbose_name='Ресторан',
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name='orders'
+    )
+
     registered_at = models.DateTimeField(
         verbose_name='Дата регистрации',
         db_index=True,
