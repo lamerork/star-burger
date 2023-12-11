@@ -160,14 +160,15 @@ class Order(models.Model):
 
     PAYMENT_METHODS = [
         ('Э', 'Электронно'),
-        ('Н', 'Наличностью')
+        ('Н', 'Наличностью'),
+        ('Е', 'Не указано')
     ]
 
     status = models.CharField(
         choices=ORDER_STATUSES,
         verbose_name='Cтатус заказа',
         max_length=1,
-        default='Н',
+        default='Е',
         db_index=True
      )
 
@@ -192,8 +193,7 @@ class Order(models.Model):
     comment = models.TextField(
         verbose_name='Комментарий к заказу',
         null=True,
-        blank=True,
-        default=''
+        blank=True
     )
 
     restaurant = models.ForeignKey(
@@ -257,8 +257,7 @@ class OrderItem(models.Model):
         verbose_name='Цена в заказе',
         max_digits=8,
         decimal_places=2,
-        validators=[MinValueValidator(0)],
-        default=0
+        validators=[MinValueValidator(0)]
     )
 
     class Meta:
