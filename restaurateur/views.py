@@ -1,11 +1,11 @@
 import requests
+from requests.exceptions import HTTPError, Timeout, ConnectionError
 from django import forms
 from django.shortcuts import redirect, render
 from django.views import View
 from django.urls import reverse_lazy
 from django.contrib.auth.decorators import user_passes_test
 from django.conf import settings
-from django.utils import timezone
 
 from django.contrib.auth import authenticate, login
 from django.contrib.auth import views as auth_views
@@ -100,23 +100,28 @@ def fetch_coordinates(address):
     place, create = Place.objects.get_or_create(address=address)
 
     if create:
-        base_url = "https://geocode-maps.yandex.ru/1.x"
-        response = requests.get(base_url, params={
-            "geocode": address,
-            "apikey": settings.YANDEX_MAP_API,
-            "format": "json",
-        })
 
-        response.raise_for_status()
-        found_places = response.json()['response']['GeoObjectCollection']['featureMember']
+        try:
+            base_url = "https://geocode-maps.yandex.ru/1.x"
+            response = requests.get(base_url, params={
+                "geocode": address,
+                "apikey": settings.YANDEX_MAP_API,
+                "format": "json",
+            })
 
-        if not found_places:
+            response.raise_for_status()
+            found_places = response.json()['response']['GeoObjectCollection']['featureMember']
+
+            if not found_places:
+                return None
+
+            most_relevant = found_places[0]
+            place.lon, place.lat  = most_relevant['GeoObject']['Point']['pos'].split(" ")
+
+            place.save()
+
+        except (HTTPError, Timeout, ConnectionError):
             return None
-
-        most_relevant = found_places[0]
-        place.lon, place.lat  = most_relevant['GeoObject']['Point']['pos'].split(" ")
-
-        place.save()
 
     return place.lon, place.lat
 
