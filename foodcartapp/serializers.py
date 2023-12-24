@@ -15,7 +15,7 @@ class OrderItemSerializer(ModelSerializer):
 class OrderSerializer(ModelSerializer):
     products = OrderItemSerializer(many=True, allow_empty=False, write_only=True)
 
-    phonenumber = PhoneNumberField(region='RU')
+    phonenumber = PhoneNumberField()
 
     def create(self, validated_data):
         order = Order.objects.create(
