@@ -57,8 +57,9 @@ pip install -r requirements.txt
 Определите переменную окружения `SECRET_KEY`. Создать файл `.env` в каталоге `star_burger/` и положите туда такой код:
 ```sh
 SECRET_KEY=django-insecure-0if40nf4nf93n4
+ROLLBAR_TOKEN='Token rollbar'
+CURRENT_ENVIRONMENT='production'
 ```
-
 Создайте файл базы данных SQLite и отмигрируйте её следующей командой:
 
 ```sh
