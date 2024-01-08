@@ -141,6 +141,18 @@ Parcel будет следить за файлами в каталоге `bundle
 ./node_modules/.bin/parcel build bundles-src/index.js --dist-dir bundles --public-url="./"
 ```
 
+Запустить Docker-контейнер с БД (замените все `...` на свои значения):
+ ```sh
+ docker run -d \
+ --name starburger-postgres \
+ -p 5432:5432 \
+ -e POSTGRES_USER=... \
+ -e POSTGRES_PASSWORD=... \
+ -e POSTGRES_DB=... \
+ -v starburger-postgres:/var/lib/postgresql/data \
+ postgres:14
+ ```
+
 Настроить бэкенд: создать файл `.env` в каталоге `star_burger/` со следующими настройками:
 
 - `DEBUG` — дебаг-режим. Поставьте `False`.
@@ -149,6 +161,7 @@ Parcel будет следить за файлами в каталоге `bundle
 - `YANDEX_MAP_API` — Токен Яндек для определения координат [см. документацию](https://yandex.ru/maps-api/products/geocoder-api?ysclid=lpqpihte6k132732429)
 - `ROLLBAR_TOKEN` - Token rollbar
 - `CURRENT_ENVIRONMENT` - production
+- `POSTGRES_DB_URL` - postgresql://пользователь:пароль@localhost:5432/имя-бд
 
 ## Цели проекта
 
