@@ -27,3 +27,15 @@ systemctl restart star-burger
 
 echo 'reload nginx daemon'
 systemctl reload nginx
+
+source /opt/star-burger/.env
+
+echo 'rollbar info deploy'
+
+COMMIT_HASH=$(git rev-parse HEAD)
+curl -H "X-Rollbar-Access-Token: $ROLLBAR_TOKEN" \
+     -H "Content-Type: application/json" \
+     -X POST 'https://api.rollbar.com/api/1/deploy' \
+     -d "{\"environment\": \"production\", \"revision\": \"$COMMIT_HASH\", \"status\": \"succeeded\", \"rollbar_username\": \"$ROLLBAR_USERNAME\"}"
+
+echo 'end deploy'
