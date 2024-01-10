@@ -1,7 +1,5 @@
 import os
 
-import dj_database_url
-
 from environs import Env
 
 
@@ -86,9 +84,7 @@ MEDIA_URL = '/media/'
 
 DATABASES = {
      'default': env.dj_db_url(
-         'POSTGRES_DB_URL',
-         default='sqlite:////{0}'.format(os.path.join(BASE_DIR, 'db.sqlite3'))
-     )
+         'POSTGRES_DB_URL')
  }
 
 AUTH_PASSWORD_VALIDATORS = [
