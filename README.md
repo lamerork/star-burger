@@ -2,7 +2,7 @@
 
 Это сайт сети ресторанов Star Burger. Здесь можно заказать превосходные бургеры с доставкой на дом.
 
-![скриншот сайта](https://dvmn.org/filer/canonical/1594651635/686/)
+![Пример сайта](https://star-burger.megabull.ru/)
 
 
 Сеть Star Burger объединяет несколько ресторанов, действующих под единой франшизой. У всех ресторанов одинаковое меню и одинаковые цены. Просто выберите блюдо из меню на сайте и укажите место доставки. Мы сами найдём ближайший к вам ресторан, всё приготовим и привезём.
@@ -138,7 +138,7 @@ Parcel будет следить за файлами в каталоге `bundle
 ### С помощью deploy-script
 
  ```sh
- scripts/deploy_star_burger.sh
+ deploy_star_burger.sh
  ```
 
  ### Вручную
@@ -168,6 +168,7 @@ Parcel будет следить за файлами в каталоге `bundle
 - `ALLOWED_HOSTS` — [см. документацию Django](https://docs.djangoproject.com/en/3.1/ref/settings/#allowed-hosts)
 - `YANDEX_MAP_API` — Токен Яндек для определения координат [см. документацию](https://yandex.ru/maps-api/products/geocoder-api?ysclid=lpqpihte6k132732429)
 - `ROLLBAR_TOKEN` - Token rollbar
+- `ROLLBAR_USERNAME` - Пользователь Rollbar
 - `CURRENT_ENVIRONMENT` - production
 - `POSTGRES_DB_URL` - postgresql://пользователь:пароль@localhost:5432/имя-бд
 
